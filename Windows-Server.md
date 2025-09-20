@@ -1,0 +1,67 @@
+📂 windows-server.md
+
+# 🖥️ Windows Server 2025 – Domain Controller
+
+## 🔧 VM Specs
+- **Operating System**: Windows Server 2025 (Preview or Final)
+- **Hostname**: `Win Server`
+- **vCPU**: 2
+- **RAM**: 4096 MB
+- **Storage**: 50 GB
+- **IP Address**: `10.0.0.5` (Static)
+
+## ⚙️ Services Installed
+- Active Directory Domain Services (ADDS)
+- DNS Server
+- DHCP Server
+
+## 🧩 AD Domain Setup
+- **Domain Name**: `corp-local.com`
+- **Forest Functional Level**: Windows Server 2025
+- **NetBIOS Name**: `CORP`
+- **Admin User**: `Administrator` / `CORP\Administrator`
+
+## 🏢 Organizational Units (OUs) & Users
+- `CORP`
+  - `OU=Users`
+    - `John Doe` (Windows11 user)
+    - `Jane Doe` (Ubuntu user)
+  - `OU=IT`
+    - `AdminUser01`
+  - `OU=Servers`
+    - `Ubuntu-Wazuh`
+    - `Ubuntu-Admin`
+
+## 🌐 DHCP Configuration
+- **Scope Name**: `CorpLAN`
+- **Address Pool**: `10.0.0.100` - `10.0.0.200`
+- **Default Gateway**: `10.0.0.1`
+- **DNS Server**: `10.0.0.5`
+- **Lease Duration**: 8 days
+- **Reservations**: (Optional – based on MAC address)
+
+## 🧭 DNS Configuration
+- Configured automatically via ADDS
+- Zone: `corp-local.com`
+- A records, PTR records created for each joined host
+- Forwarders: `8.8.8.8`, `1.1.1.1`
+
+## 🛠️ Domain Join Steps for Clients
+1. Set DNS to `10.0.0.5` on client machine
+2. Join domain via GUI or:
+   ```powershell
+   Add-Computer -DomainName corp.local -Credential corp\Administrator
+   Restart-Computer
+--
+
+🧪 Testing & Validation
+•	dcdiag and netdiag run to confirm AD health
+•	Checked Event Viewer > Directory Services logs
+•	Verified clients received DHCP IPs and were resolvable via DNS
+
+--
+
+❗ Known Issues / Fixes
+•	❌ DHCP not issuing addresses → ✔️ Ensure DHCP is authorized
+•	❌ Clients can’t resolve names → ✔️ Verify they use 10.0.0.5 as DNS
+•	❌ Join domain fails → ✔️ Time sync issue or wrong DNS
