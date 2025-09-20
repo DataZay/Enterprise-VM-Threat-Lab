@@ -1,0 +1,26 @@
+📂 ubuntu-jane.md
+# 🧑‍💻 Ubuntu Workstation – Jane Doe
+
+## 🔧 VM Specs
+- OS: Ubuntu 22.04 Desktop
+- Hostname: `jane-linux`
+- IP: `10.0.0.101`
+- RAM: 2 GB
+
+## 🏷️ Domain Join via `realmd`
+1. Install required packages:
+   ```bash
+   sudo apt install realmd sssd sssd-tools adcli samba-common-bin oddjob oddjob-mkhomedir packagekit
+Discover and join domain:
+sudo apt -y install winbind libpam-winbind libnss-winbind krb5-config samba-dsdb-modules samba-vfs-modules
+CORP-LOCAL.COM
+sudo nano /etc/samba/smb.conf
+(Server-world info winbind)
+sudo nano /etc/nsswitch.conf
+  Add winbind to passwd: and group: files systemd winbind
+sudo pam-auth-update (Active Directory)
+- Change DNS settings to refer to AD.
+    sudo nano /etc/resolv.conf (10.0.0.5)
+sudo join -U Administrator corp-local.com
+systemctl restart winbind
+wbinfo -u
